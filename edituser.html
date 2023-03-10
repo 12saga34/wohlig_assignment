@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Edit User</title>
+</head>
+
+<body>
+    <h1>Edit User</h1>
+    <form id="edit-form">
+        <label for="firstname">Name:</label>
+        <input type="text" id="firstname" name="firstname"><br><br>
+
+        <label for="lastname">Name:</label>
+        <input type="text" id="lastname" name="lastname"><br><br>
+
+
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone"><br><br>
+        
+        <label for="applied_for">Applied For:</label>
+        <select id="applied_for" name="applied_for">
+            <option value="front-end">Front-End</option>
+            <option value="back-end">Back-End</option>
+            <option value="full-stack">Full-Stack</option>
+        </select><br><br>
+        
+        <label for="rating">Rating:</label>
+        <select id="rating" name="rating">
+            <option value="1">1 star</option>
+            <option value="2">2 stars</option>
+            <option value="3">3 stars</option>
+            <option value="4">4 stars</option>
+            <option value="5">5 stars</option>
+        </select><br><br>
+        
+        <input type="submit" value="Save Changes">
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var urlParams = new URLSearchParams(window.location.search);
+            var userId = urlParams.get('id');
+
+            $.ajax({
+                url: "http://localhost:3000/users/" + userId,
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    $("#firstname").val(data.firstname);
+                    $("#lastname").val(data.lastname);
+                    $("#phone").val(data.phone);
+                    $("#applied_for").val(data.applied_for);
+                    $("#rating").val(data.rating);
+                }
+            });
+
+            // Submit form to update user data
+            $("#edit-form").submit(function (event) {
+                event.preventDefault();
+                var firstname = $("#firstname").val();
+                var lastname = $("#lastname").val();
+                var phone = $("#phone").val();
+                var applied_for = $("#applied_for").val();
+                var rating = $("#rating").val();
+                $.ajax({
+                    url: "http://localhost:3000/users/" + userId,
+                    type: "PUT",
+                    data: {
+                        firstname: firstname,
+                        lastname: lastname,
+                        phone: phone,
+                        applied_for: applied_for,
+                        rating: rating
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        console.log("User info updated: ", data);
+                        window.location.href = "index.html"
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Wohlig Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,500;1,600;1,700&display=swap"
+        rel="stylesheet">
+    <style>
+        body,
+        select,
+        button {
+            font-family: Poppins;
+        }
+
+        input,
+        select,
+        button {
+            margin-top: .5rem;
+            margin-bottom: .5rem;
+        }
+
+        .inputs-container {
+            width: 300px;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            /* two columns with 1:2 ratio */
+            grid-gap: 10px;
+            /* gap between cells */
+        }
+
+        label {
+            text-align: right;
+            /* align labels to right */
+        }
+
+        button
+        {
+            background-color: #dc143c;
+            border:none;
+            color: white;
+        }
+        a
+        {
+            padding: .2rem .5rem;
+            margin: .2rem 1rem;
+            background-color: #239ac5;
+            text-decoration: none;
+            color: white;
+        }
+        table
+        {
+            border-spacing: 2rem 0;
+        }
+        /* th
+        {
+            padding: 1rem;
+        } */
+    </style>
+</head>
+
+<body>
+    <h1>Candidates Management</h1>
+    <div id="message">
+
+    </div>
+    <form id="my-form">
+        <div class="inputs-container">
+
+            <label for="firstname">First Name:</label>
+            <input type="text" id="firstname" name="firstname">
+
+            <label for="lastname">Last Name:</label>
+            <input type="text" id="lastname" name="lastname">
+
+            <label for="phone">Phone:</label>
+            <input type="text" id="phone" name="phone">
+
+            <label for="applied_for">Applied For:</label>
+            <select id="applied_for" name="applied_for">
+                <option value="front-end">Front-end</option>
+                <option value="back-end">Back-end</option>
+                <option value="full-stack">Full-stack</option>
+            </select>
+
+            <label for="rating">Rating:</label>
+            <select id="rating" name="rating">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+
+        </div>
+        <button type="submit">Add Candidate</button>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            console.log("hello")
+            $('#my-form').submit(function (event) {
+                event.preventDefault(); // prevent default form submit
+                $.ajax({
+                    url: 'http://localhost:3000/adduser',
+                    type: 'post',
+                    data: $('#my-form').serialize(), // serialize form data
+                    success: function (data) {
+                        $('#message').text("Your form was submitted successfully")
+                        window.location.href = "index.html"
+                    },
+                    error: function (err) {
+                        $('#message').text(err)
+
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $.get("http://localhost:3000/users", function (data) {
+                data.forEach(function (user) {
+                    console.log(user)
+                    var tr = $("<tr>");
+                    tr.append($("<td>").text(user.firstname))
+                    tr.append($("<td>").text(user.lastname));
+                    tr.append($("<td>").text(user.phone));
+                    tr.append($("<td>").text(user.applied_for));
+                    tr.append($("<td>").text(user.rating));
+                    var lastcol = tr.append($("<td>"))
+                    lastcol.append(`<button class='delete' data-id='${user._id}'>delete</button>`);
+                    console.log(user.id)
+                    lastcol.append(`<a class='edit' href='/edituser.html?id=${user._id}'> edit </a>`);
+                    $("#user-table").append(tr);
+                });
+            });
+        });
+    </script>
+
+    <script>
+        $(document).on('click', '.delete', function () {
+            const userId = $(this).data('id');
+            $.ajax({
+                url: `http://localhost:3000/users/${userId}`,
+                type: 'DELETE',
+                success: function () {
+                    $('#message').text("User Deleted successfully");
+                    location.reload()
+                },
+                error: function () {
+                    $('#message').text(err)
+                }
+            });
+        });
+
+    </script>
+
+
+    <hr>
+
+    <h2>Candidates List</h2>
+    <table id="user-table">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Phone</th>
+                <th>Applied For</th>
+                <th>Rating</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- more candidates here -->
+        </tbody>
+    </table>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
