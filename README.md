@@ -1,6 +1,6 @@
 ## The database entries can be added via the frontend interface. It has CRUD applications to manage interview candidates' information.
 
-Database script to create the users collection in MongoDB using Mongoose:
+Database script to create the users collection in MongoDB using Mongoose :
 
 const mongoose = require('mongoose');
 
