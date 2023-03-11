@@ -1,5 +1,6 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const config = require('./config');
+const User = require('./db')
 const { serializeInteger } = require('whatwg-url');
 const app = express();
 const port = 3000;
@@ -15,18 +16,8 @@ app.use(function (req, res, next) {
     next();
 });
 
-mongoose.set('strictQuery', false);
-mongoose.connect("mongodb://127.0.0.1:27017/users");
 
-const userSchema = {
-    firstname: { type: String, required: true },
-    lastname: { type: String, required: true },
-    phone: { type: String, required: true },
-    applied_for: { type: String, enum: ['front-end', 'back-end', 'full-stack'], required: true },
-    rating: { type: Number, min: 1, max: 5, required: true }
-};
 
-const User = mongoose.model("users", userSchema);
 
 
 app.post("/adduser", function (req, res) {
